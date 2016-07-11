@@ -1,0 +1,9 @@
+sms:
+ rest:
+  endpoint: "http://localhost/sendSMS"
+  mobileparameter: "sMobile"
+  messageparameter: "sMsg"
+  userparameter: "sUser"
+  user: "testuser"
+  passwordparameter: "sPassword"
+  password: "topsecret"

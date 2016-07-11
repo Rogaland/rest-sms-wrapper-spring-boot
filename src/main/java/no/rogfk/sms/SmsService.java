@@ -13,11 +13,17 @@ import java.util.Optional;
 @Service
 public class SmsService {
 
-    @Autowired
+    @Autowired(required = false)
     private RestTemplate restTemplate;
 
     @Value("${sms.rest.endpoint}")
-    private Optional<String> endpoint;
+    private String endpoint;
+
+    @Value("${sms.rest.mobileparameter}")
+    private String mobileParameter;
+
+    @Value("${sms.rest.messageparameter}")
+    private String messageParameter;
 
     @Value("${sms.rest.userparameter}")
     private Optional<String> userParameter;
@@ -31,31 +37,25 @@ public class SmsService {
     @Value("${sms.rest.password}")
     private Optional<String> password;
 
-    @Value("${sms.rest.mobileparameter}")
-    private Optional<String> mobileParameter;
-
-    @Value("${sms.rest.messageparameter}")
-    private Optional<String> messageParameter;
-
     private String message;
 
-
-    @Value("sms.rest.successvalue")
-    Optional<String> successValue;
+    private UriComponentsBuilder builder;
 
     @PostConstruct
-    public void checkConfig() {
-        if (!endpoint.isPresent()) throw new MissingConfigException("sms.rest.endpoint");
-        if (!mobileParameter.isPresent()) throw new MissingConfigException("sms.rest.mbileparameter");
-        if (!messageParameter.isPresent()) throw new MissingConfigException("sms.rest.messageparameter");
-        if (!successValue.isPresent()) throw new MissingConfigException("sms.rest.successvalue");
+    public void init() {
+        verifyConfig();
+        builder = UriComponentsBuilder.fromHttpUrl(endpoint);
+        userParameter.ifPresent(p -> builder.queryParam(p, user.get()));
+        passwordParameter.ifPresent(p -> builder.queryParam(p, password.get()));
 
-        if (userParameter.isPresent() && (!user.isPresent()) throw new MissingConfigException("sms.rest.user");
-        if (passwordParameter.isPresent() && (!password.isPresent())) throw new MissingConfigException("sms.rest.password");
+        if(restTemplate == null) {
+            restTemplate = new RestTemplate();
+        }
     }
 
-    public SmsService() {
-
+    private void verifyConfig() {
+        if (userParameter.isPresent() && (!user.isPresent())) throw new MissingConfigException("sms.rest.user");
+        if (passwordParameter.isPresent() && (!password.isPresent())) throw new MissingConfigException("sms.rest.password");
     }
 
     public void setMessage(String message) {
@@ -66,14 +66,10 @@ public class SmsService {
         return restTemplate.getForObject(getUrl(message, mobile), responseType.getClass());
     }
 
-    private String getUrl(String message, String mobile) {
-        UriComponentsBuilder urlBuilder = UriComponentsBuilder.fromHttpUrl(endpoint.get());
-        userParameter.ifPresent(p -> urlBuilder.queryParam(p, user.get()));
-        passwordParameter.ifPresent(p -> urlBuilder.queryParam(p, password.get()));
-        urlBuilder.queryParam(mobileParameter.get(), mobile);
-        urlBuilder.queryParam(messageParameter.get(), message);
-
+    String getUrl(String message, String mobile) {
+        UriComponentsBuilder urlBuilder = builder.cloneBuilder();
+        urlBuilder.queryParam(mobileParameter, mobile);
+        urlBuilder.queryParam(messageParameter, message);
         return urlBuilder.build(false).encode().toUriString();
-
     }
 }
