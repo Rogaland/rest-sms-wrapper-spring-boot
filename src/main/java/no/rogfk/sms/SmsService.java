@@ -62,14 +62,18 @@ public class SmsService {
         this.message = message;
     }
 
-    public Object sendSms(String message, String mobile, Object responseType) {
-        return restTemplate.getForObject(getUrl(message, mobile), responseType.getClass());
+    public String sendSms(String message, String mobile) {
+        return restTemplate.getForObject(getUrl(message, mobile), String.class);
+    }
+
+    public <T> T sendSms(String message, String mobile, Class<T> clazz) {
+        return restTemplate.getForObject(getUrl(message, mobile), clazz);
     }
 
     String getUrl(String message, String mobile) {
         UriComponentsBuilder urlBuilder = builder.cloneBuilder();
         urlBuilder.queryParam(mobileParameter, mobile);
         urlBuilder.queryParam(messageParameter, message);
-        return urlBuilder.build(false).encode().toUriString();
+        return urlBuilder.build(false).toUriString();
     }
 }
