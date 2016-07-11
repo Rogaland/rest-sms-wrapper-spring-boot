@@ -5,7 +5,7 @@
 
 	<groupId>no.rogfk</groupId>
 	<artifactId>rest-sms-wrapper-spring-boot</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.3-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<properties>
@@ -133,6 +133,25 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<repositories>
+		<repository>
+			<id>spring-releases</id>
+			<url>http://repo.spring.io/release</url>
+		</repository>
+		<repository>
+			<id>jcenter</id>
+			<url>http://jcenter.bintray.com/</url>
+		</repository>
+	</repositories>
+
+	<distributionManagement>
+		<repository>
+			<id>bintray-rfkikt-maven</id>
+			<name>rfkikt-maven</name>
+			<url>https://api.bintray.com/maven/rfkikt/maven/rest-sms-wrapper-spring-boot/;publish=1</url>
+		</repository>
+	</distributionManagement>
 	
 
 </project>
