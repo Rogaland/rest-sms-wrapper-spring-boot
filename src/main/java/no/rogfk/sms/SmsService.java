@@ -3,14 +3,12 @@ package no.rogfk.sms;
 import no.rogfk.sms.exceptions.MissingConfigException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.annotation.PostConstruct;
 import java.util.Optional;
 
-@Service
 public class SmsService {
 
     @Autowired(required = false)
@@ -48,14 +46,15 @@ public class SmsService {
         userParameter.ifPresent(p -> builder.queryParam(p, user.get()));
         passwordParameter.ifPresent(p -> builder.queryParam(p, password.get()));
 
-        if(restTemplate == null) {
+        if (restTemplate == null) {
             restTemplate = new RestTemplate();
         }
     }
 
     private void verifyConfig() {
         if (userParameter.isPresent() && (!user.isPresent())) throw new MissingConfigException("sms.rest.user");
-        if (passwordParameter.isPresent() && (!password.isPresent())) throw new MissingConfigException("sms.rest.password");
+        if (passwordParameter.isPresent() && (!password.isPresent()))
+            throw new MissingConfigException("sms.rest.password");
     }
 
     public void setMessage(String message) {
