@@ -29,4 +29,4 @@ The options are:
 | sms.rest.userparameter | The query parameter that contains the username |
 | sms.rest.passwordparameter | The query parameter that contains the password |
 | jasypt.encryptor.password | Encrypts/decrypts the password property. Is usually set as an environment variable when starting the application |
-| sms.mode | Options: SEND_IMMEDIATELY, MANUAL_QUEUE |
+| sms.mode | Options: SEND_IMMEDIATELY (default), MANUAL_QUEUE |
