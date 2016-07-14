@@ -10,3 +10,4 @@
 | sms.rest.messageparameter | The query parameter that contains the message |
 | sms.rest.userparameter | The query parameter that contains the username |
 | sms.rest.passwordparameter | The query parameter that contains the password |
+| jasypt.encryptor.password | Encrypts/decrypts the password property. Is usually set as an environment variable when starting the application |
