@@ -4,7 +4,6 @@
 | Key | Description |
 |-----|----------|
 | sms.rest.endpoint | The endpoint of the external SMS service |
-
 | sms.rest.user | The username for the external SMS service |
 | sms.rest.password | The password for the external SMS service |
 
