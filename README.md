@@ -6,7 +6,7 @@
 
 _build.gradle_
 ```
-compile('no.rogfk:rest-sms-wrapper-spring-boot:0.0.3')
+compile('no.rogfk:rest-sms-wrapper-spring-boot:0.0.5')
 ```
 
 ## Usage
