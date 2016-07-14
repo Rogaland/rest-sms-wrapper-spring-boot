@@ -17,4 +17,8 @@ public abstract class AbstractSmsStrategy implements SmsStrategy {
         }
     }
 
+    public <T> T sendSms(String url, Class<T> clazz) {
+        return restTemplate.getForObject(url, clazz);
+    }
+
 }

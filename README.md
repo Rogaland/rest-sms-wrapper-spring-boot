@@ -1,6 +1,22 @@
 # Rest SMS wrapper Spring Boot
 
-## Configuration
+## Installation
+
+_build.gradle_
+```
+compile('no.rogfk:rest-sms-wrapper-spring-boot:0.0.3')
+```
+
+## Usage
+
+Enable the Sms Wrapper by adding `@EnableSmsWrapper` on the same class containing the `@SpringBootApplication` annotation.  
+
+You can configure a the mode by either setting the property `sms.mode` or in the `@EnableSmsWrapper` annotation.
+The options are:
+* SEND_IMMEDIATELY - Will send each SMS immediately as they are received
+* MANUAL_QUEUE - Queues up all the requests until a send command (on the `ManualQueueStrategy` bean) is called.
+
+### Configuration
 | Key | Description |
 |-----|----------|
 | sms.rest.endpoint | The endpoint of the external SMS service |
@@ -11,3 +27,4 @@
 | sms.rest.userparameter | The query parameter that contains the username |
 | sms.rest.passwordparameter | The query parameter that contains the password |
 | jasypt.encryptor.password | Encrypts/decrypts the password property. Is usually set as an environment variable when starting the application |
+| sms.mode | Options: SEND_IMMEDIATELY, MANUAL_QUEUE |
