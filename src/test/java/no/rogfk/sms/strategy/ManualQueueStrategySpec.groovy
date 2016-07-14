@@ -18,4 +18,13 @@ class ManualQueueStrategySpec extends Specification {
         response == "Added to SMS queue"
         manualQueueStrategy.getQueue().get(0) == "http://localhost"
     }
+
+    def "Clear SMS queue"() {
+        when:
+        manualQueueStrategy.sendSms("http://localhost", String)
+        manualQueueStrategy.removeAll()
+
+        then:
+        manualQueueStrategy.getQueue().size() == 0
+    }
 }
