@@ -1,18 +1,15 @@
 package no.rogfk.sms;
 
 import no.rogfk.sms.exceptions.MissingConfigException;
+import no.rogfk.sms.strategy.SmsStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.annotation.PostConstruct;
 import java.util.Optional;
 
 public class SmsService {
-
-    @Autowired(required = false)
-    private RestTemplate restTemplate;
 
     @Value("${sms.rest.endpoint}")
     private String endpoint;
@@ -35,6 +32,9 @@ public class SmsService {
     @Value("${sms.rest.password}")
     private Optional<String> password;
 
+    @Autowired
+    private SmsStrategy smsStrategy;
+
     private String message;
 
     private UriComponentsBuilder builder;
@@ -45,10 +45,6 @@ public class SmsService {
         builder = UriComponentsBuilder.fromHttpUrl(endpoint);
         userParameter.ifPresent(p -> builder.queryParam(p, user.get()));
         passwordParameter.ifPresent(p -> builder.queryParam(p, password.get()));
-
-        if (restTemplate == null) {
-            restTemplate = new RestTemplate();
-        }
     }
 
     private void verifyConfig() {
@@ -62,11 +58,11 @@ public class SmsService {
     }
 
     public String sendSms(String message, String mobile) {
-        return restTemplate.getForObject(getUrl(message, mobile), String.class);
+        return smsStrategy.sendSms(getUrl(message, mobile), String.class);
     }
 
     public <T> T sendSms(String message, String mobile, Class<T> clazz) {
-        return restTemplate.getForObject(getUrl(message, mobile), clazz);
+        return smsStrategy.sendSms(getUrl(message, mobile), clazz);
     }
 
     String getUrl(String message, String mobile) {
