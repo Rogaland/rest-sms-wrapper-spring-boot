@@ -11,6 +11,7 @@
 
 These values are used to build the request sent to the external SMS service.
 I works by using the endpoint and adding the parameters.
+
 | Key | Description |
 |-----|----------|
 | sms.rest.mobileparameter | The query parameter that contains the phone number |
