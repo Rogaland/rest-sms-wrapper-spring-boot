@@ -2,6 +2,7 @@ package no.rogfk.sms.strategy;
 
 import lombok.extern.slf4j.Slf4j;
 import no.rogfk.sms.strategy.dto.FormattedValue;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -12,6 +13,8 @@ import java.util.function.Predicate;
 @Slf4j
 public class ManualQueueStrategy extends AbstractSmsStrategy {
 
+    @Value("${sms.rest.response-predicate}")
+    private String responsePredicate;
     private Set<String> smsQueue = new HashSet<>();
 
     @Override
@@ -45,7 +48,8 @@ public class ManualQueueStrategy extends AbstractSmsStrategy {
         smsQueue.add(url);
     }
 
-    public void sendQueue(Predicate<String> sentResponse) {
+    public void sendQueue() {
+        Predicate<String> sentResponse = s -> s.contains(responsePredicate);
         Set<String> queueCopy = new HashSet<>(smsQueue);
         for (String url : queueCopy) {
             String response = super.sendSms(url, String.class);
