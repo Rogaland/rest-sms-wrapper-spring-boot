@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 
 @Slf4j
 public class ManualQueueStrategy extends AbstractSmsStrategy {
@@ -44,13 +45,17 @@ public class ManualQueueStrategy extends AbstractSmsStrategy {
         smsQueue.add(url);
     }
 
-    public void sendQueue() {
-        smsQueue.forEach(url -> {
+    public void sendQueue(Predicate<String> sentResponse) {
+        Set<String> queueCopy = new HashSet<>(smsQueue);
+        for (String url : queueCopy) {
             String response = super.sendSms(url, String.class);
             log.info("Response: {}", response);
-            // TODO: 17.07.2016 Ref issue #1 
-            //smsQueue.remove(url);
-        });
-        smsQueue.clear();
+            if (sentResponse.test(response)) {
+                log.debug("Response OK, removing from list");
+                smsQueue.remove(url);
+            } else {
+                log.warn("Response not OK, keeping SMS in queue: {} (response: '{}')", url, response);
+            }
+        }
     }
 }

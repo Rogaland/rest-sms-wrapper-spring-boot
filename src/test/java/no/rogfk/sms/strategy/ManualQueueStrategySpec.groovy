@@ -1,13 +1,18 @@
 package no.rogfk.sms.strategy
 
+import org.springframework.web.client.RestTemplate
 import spock.lang.Specification
+
+import java.util.function.Predicate
 
 class ManualQueueStrategySpec extends Specification {
 
     private ManualQueueStrategy manualQueueStrategy
+    private RestTemplate restTemplate
 
     void setup() {
-        manualQueueStrategy = new ManualQueueStrategy()
+        restTemplate = Mock(RestTemplate)
+        manualQueueStrategy = new ManualQueueStrategy(restTemplate: restTemplate)
     }
 
     def "Send SMS, String response"() {
@@ -48,5 +53,33 @@ class ManualQueueStrategySpec extends Specification {
         values.size() == 1
         values.get(0).host == "http://localhost"
         values.get(0).values.size() == 3
+    }
+
+    def "Send SMS and clear list"() {
+        given:
+        manualQueueStrategy.add("http://localhost1")
+        manualQueueStrategy.add("http://localhost2")
+        Predicate<String> validResponse = { response -> response.equals("Test response") } as Predicate<String>
+
+        when:
+        manualQueueStrategy.sendQueue(validResponse)
+
+        then:
+        2 * restTemplate.getForObject(_ as String, _ as Class) >> "Test response"
+        manualQueueStrategy.getQueue().size() == 0
+    }
+
+    def "Send SMS, do not clear list if response is not valid"() {
+        given:
+        manualQueueStrategy.add("http://localhost1")
+        manualQueueStrategy.add("http://localhost2")
+        Predicate<String> validResponse = { response -> false } as Predicate<String>
+
+        when:
+        manualQueueStrategy.sendQueue(validResponse)
+
+        then:
+        2 * restTemplate.getForObject(_ as String, _ as Class) >> "Test response"
+        manualQueueStrategy.getQueue().size() == 2
     }
 }
