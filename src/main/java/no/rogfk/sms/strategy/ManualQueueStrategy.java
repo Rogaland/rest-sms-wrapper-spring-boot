@@ -48,7 +48,9 @@ public class ManualQueueStrategy extends AbstractSmsStrategy {
         smsQueue.forEach(url -> {
             String response = super.sendSms(url, String.class);
             log.info("Response: {}", response);
-            smsQueue.remove(url);
+            // TODO: 17.07.2016 Ref issue #1 
+            //smsQueue.remove(url);
         });
+        smsQueue.clear();
     }
 }
