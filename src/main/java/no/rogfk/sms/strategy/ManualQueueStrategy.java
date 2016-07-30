@@ -13,7 +13,7 @@ import java.util.function.Predicate;
 @Slf4j
 public class ManualQueueStrategy extends AbstractSmsStrategy {
 
-    @Value("${sms.rest.response-predicate}")
+    @Value("${sms.rest.response-predicate:}")
     private String responsePredicate;
     private Set<String> smsQueue = new HashSet<>();
 
@@ -49,12 +49,20 @@ public class ManualQueueStrategy extends AbstractSmsStrategy {
     }
 
     public void sendQueue() {
+        if (responsePredicate == null) {
+            throw new IllegalStateException("No value set for sms.rest.response-predicate");
+        }
+
         Predicate<String> sentResponse = s -> s.contains(responsePredicate);
+        sendQueue(sentResponse);
+    }
+
+    public void sendQueue(Predicate<String> predicate) {
         Set<String> queueCopy = new HashSet<>(smsQueue);
         for (String url : queueCopy) {
             String response = super.sendSms(url, String.class);
             log.info("Response: {}", response);
-            if (sentResponse.test(response)) {
+            if (predicate.test(response)) {
                 log.debug("Response OK, removing from list");
                 smsQueue.remove(url);
             } else {

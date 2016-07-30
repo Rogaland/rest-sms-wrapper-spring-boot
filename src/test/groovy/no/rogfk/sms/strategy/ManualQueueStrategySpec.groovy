@@ -82,4 +82,12 @@ class ManualQueueStrategySpec extends Specification {
         2 * restTemplate.getForObject(_ as String, _ as Class) >> "Test response"
         manualQueueStrategy.getQueue().size() == 2
     }
+
+    def "Except IllegalStateException when trying to send SMS without setting response-predicate"() {
+        when:
+        manualQueueStrategy.sendQueue()
+
+        then:
+        thrown(IllegalStateException)
+    }
 }
