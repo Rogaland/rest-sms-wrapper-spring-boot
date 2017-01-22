@@ -9,7 +9,7 @@ node {
         }
 
         stage('build') {
-            sh './mvnw clean install'
+            sh './mvnw clean package'
         }
 
         stage('deploy') {

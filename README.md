@@ -1,6 +1,6 @@
 # Rest SMS wrapper Spring Boot
 
-[![Build Status](https://travis-ci.org/Rogaland/rest-sms-wrapper-spring-boot.svg?branch=master)](https://travis-ci.org/Rogaland/rest-sms-wrapper-spring-boot)
+[![Build Status](https://jenkins.rogfk.no/buildStatus/icon?job=Rogaland fylkeskommune/rest-sms-wrapper-spring-boot/master)](https://jenkins.rogfk.no/job/Rogaland%20fylkeskommune/job/rest-sms-wrapper-spring-boot/job/master/)
 
 ## Installation
 
